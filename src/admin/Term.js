@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 
 const Term = ({ onBack }) => {
-  const [subjects, setSubjects] = useState([
-    { name: '', term: '', year: '' }, // Премахване на полето "grade"
-  ]);
+  const [subjects, setSubjects] = useState([{ name: '' }]); // Премахване на полетата "term" и "year"
 
   const handleInputChange = (index, event) => {
     const newSubjects = [...subjects];
@@ -12,7 +10,7 @@ const Term = ({ onBack }) => {
   };
 
   const handleAddSubject = () => {
-    setSubjects([...subjects, { name: '', term: '', year: '' }]); // Премахване на полето "grade"
+    setSubjects([...subjects, { name: '' }]); // Премахване на полетата "term" и "year"
   };
 
   const handleRemoveSubject = (index) => {
@@ -42,7 +40,7 @@ const Term = ({ onBack }) => {
 
   return (
       <div style={styles.container}>
-        <h1 style={styles.title}>Създаване на срокове и предмети</h1>
+        <h1 style={styles.title}>Създаване на Предмети</h1> {/* Промяна на заглавието */}
         <div style={styles.subjectList}>
           {subjects.map((subject, index) => (
               <div key={index} style={styles.subjectBox}>
@@ -53,22 +51,6 @@ const Term = ({ onBack }) => {
                     value={subject.name}
                     onChange={(e) => handleInputChange(index, e)}
                     placeholder="Име"
-                    style={styles.input}
-                />
-                <input
-                    type="text"
-                    name="term"
-                    value={subject.term}
-                    onChange={(e) => handleInputChange(index, e)}
-                    placeholder="Срок"
-                    style={styles.input}
-                />
-                <input
-                    type="text"
-                    name="year"
-                    value={subject.year}
-                    onChange={(e) => handleInputChange(index, e)}
-                    placeholder="Година"
                     style={styles.input}
                 />
                 <button

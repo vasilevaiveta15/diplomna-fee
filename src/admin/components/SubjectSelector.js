@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './SubjectSelector.css'; // Добавете необходимите стилове тук
+import './SubjectSelector.css';
 
 const SubjectSelector = ({ term, selectedSubjects, onSelect }) => {
   const [subjects, setSubjects] = useState([]);
@@ -39,25 +39,21 @@ const SubjectSelector = ({ term, selectedSubjects, onSelect }) => {
     return <div>Грешка: {error}</div>;
   }
 
-  // Филтриране на предметите по срок
-  const filteredSubjects = subjects.filter(subject => subject.term === term);
-
   return (
-      <div className="subject-buttons">
-        {filteredSubjects.length > 0 ? (
-            filteredSubjects.map(subject => (
-                <button
-                    key={subject.id}
-                    type="button"
-                    onClick={() => onSelect(subject.id)}
-                    className={`subject-button ${selectedSubjects.includes(subject.id) ? 'selected' : ''}`}
-                >
-                  {subject.name}
-                </button>
-            ))
-        ) : (
-            <p>Няма предмети за избраният срок.</p>
-        )}
+      <div className="term-container">
+        <h4>Срок {term}:</h4>
+        <div className="subject-buttons">
+          {subjects.map(subject => (
+              <button
+                  key={subject.id}
+                  type="button"
+                  onClick={() => onSelect(subject.id, term)}
+                  className={`subject-button ${selectedSubjects.get(subject.id) === term ? 'selected' : ''}`}
+              >
+                {subject.name}
+              </button>
+          ))}
+        </div>
       </div>
   );
 };

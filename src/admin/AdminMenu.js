@@ -60,7 +60,7 @@ const AdminMenu = () => {
             Създаване на ученически профил
           </Button>
           <Button variant="contained" color="primary" sx={{ marginTop: 2 }} onClick={handleShowTerm}>
-            Създаване на срокове и предмети
+            Създаване предмети
           </Button>
         </Box>
       )}

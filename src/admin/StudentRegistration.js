@@ -3,19 +3,18 @@ import './css/StudentRegistration.css';
 import SubjectSelector from './components/SubjectSelector';
 
 const StudentRegistration = ({ onBack }) => {
-  const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [selectedSubjects, setSelectedSubjects] = useState(new Map());
+  const [currentClass, setCurrentClass] = useState('');
+  const [classes, setClasses] = useState([]);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     password: '',
     repeatedPassword: '',
-    role: 'STUDENT',
-    clas: '',
+    myClas: '',
     group: '',
   });
-
-  const [successMessage, setSuccessMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,20 +24,35 @@ const StudentRegistration = ({ onBack }) => {
     }));
   };
 
-  const handleSubjectToggle = (subjectId) => {
+  const handleSubjectToggle = (subjectId, term) => {
     setSelectedSubjects(prevSelectedSubjects => {
-      const isSelected = prevSelectedSubjects.includes(subjectId);
-      if (isSelected) {
-        return prevSelectedSubjects.filter(id => id !== subjectId);
+      const updatedSubjects = new Map(prevSelectedSubjects);
+      if (updatedSubjects.has(subjectId)) {
+        updatedSubjects.delete(subjectId);
       } else {
-        return [...prevSelectedSubjects, subjectId];
+        updatedSubjects.set(subjectId, term);
       }
+      return updatedSubjects;
     });
+  };
+
+  const handleAddClass = () => {
+    if (currentClass) {
+      setClasses(prevClasses => {
+        const newClass = parseInt(prevClasses[prevClasses.length - 1]) + 1;
+        return [...prevClasses, newClass];
+      });
+      setCurrentClass('');
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        myClas: ''
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { firstName, lastName, email, password, repeatedPassword, clas, group } = formData;
+    const { firstName, lastName, email, password, repeatedPassword, myClas, group } = formData;
 
     if (password !== repeatedPassword) {
       alert('Паролите не съвпадат');
@@ -46,6 +60,20 @@ const StudentRegistration = ({ onBack }) => {
     }
 
     try {
+      // Преобразуване на избраните предмети в необходимия формат
+      const subjects = [];
+      classes.forEach(cls => {
+        const term1Subjects = [...selectedSubjects.entries()].filter(([id, term]) => term === 1).map(([id]) => id);
+        const term2Subjects = [...selectedSubjects.entries()].filter(([id, term]) => term === 2).map(([id]) => id);
+        subjects.push({
+          classs: cls,
+          subjects: {
+            ...Object.fromEntries(term1Subjects.map(id => [id, 1])),
+            ...Object.fromEntries(term2Subjects.map(id => [id, 2]))
+          }
+        });
+      });
+
       const response = await fetch('http://localhost:8080/api/be/e-journal/user/reg/student', {
         method: 'POST',
         headers: {
@@ -57,22 +85,19 @@ const StudentRegistration = ({ onBack }) => {
           lastName,
           email,
           password,
+          repeatedPassword,
           role: 'STUDENT',
-          clas,
+          myClas,
           group,
-          subjectId: selectedSubjects
-        })
+          requestSubj: subjects,
+        }),
       });
 
       if (response.status === 201) {
-        setSuccessMessage('Успешно създадохте ученически профил.');
-        setTimeout(() => {
-          if (typeof onBack === 'function') {
-            onBack();
-          } else {
-            console.error('onBack не е функция');
-          }
-        }, 2000);
+        alert('Успешно създадохте ученически профил.');
+        if (typeof onBack === 'function') {
+          onBack();
+        }
       } else {
         console.error('Неуспешна регистрация:', response.status);
         throw new Error('Неуспешна регистрация на ученик');
@@ -141,46 +166,35 @@ const StudentRegistration = ({ onBack }) => {
             <label>Клас:</label>
             <input
                 type="text"
-                name="clas"
-                value={formData.clas}
-                onChange={handleChange}
+                name="myClas"
+                value={currentClass}
+                onChange={(e) => setCurrentClass(e.target.value)}
                 required
             />
+            <button type="button" className="btn-next-class" onClick={handleAddClass}>
+              Следващ клас
+            </button>
           </div>
-          <div>
-            <label>Група:</label>
-            <input
-                type="text"
-                name="group"
-                value={formData.group}
-                onChange={handleChange}
-                required
-            />
-          </div>
-
-          {/* Subject Selector разделен на Срок 1 и Срок 2 */}
           <div className="subject-selector">
-            <h3>Предмети:</h3>
-            <div className="term-container">
-              <h4>Срок 1</h4>
-              <SubjectSelector
-                  term={1}
-                  selectedSubjects={selectedSubjects}
-                  onSelect={handleSubjectToggle}
-              />
-              <h4>Срок 2</h4>
-              <SubjectSelector
-                  term={2}
-                  selectedSubjects={selectedSubjects}
-                  onSelect={handleSubjectToggle}
-              />
-            </div>
+            {classes.map((cls, index) => (
+                <div key={index} className="class-section">
+                  {index === 0 ? null : <h3>Клас {cls}:</h3>}
+                  <SubjectSelector
+                      term={1}
+                      selectedSubjects={selectedSubjects}
+                      onSelect={handleSubjectToggle}
+                  />
+                  <SubjectSelector
+                      term={2}
+                      selectedSubjects={selectedSubjects}
+                      onSelect={handleSubjectToggle}
+                  />
+                </div>
+            ))}
           </div>
-
-          <button type="submit" className="btn-register">Регистрирай ученик</button>
-          <button type="button" onClick={onBack} className="btn-back">Назад</button>
+          <button type="submit" className="submit-button">Регистрирай</button>
+          <button type="button" onClick={onBack} className="back-button">Назад</button>
         </form>
-        {successMessage && <div className="success-message">{successMessage}</div>}
       </div>
   );
 };
