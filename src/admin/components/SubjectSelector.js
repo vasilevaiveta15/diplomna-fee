@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './SubjectSelector.css';
 
-const SubjectSelector = ({ term, selectedSubjects, onSelect }) => {
+const SubjectSelector = ({ term, cls, selectedSubjects, onSelect }) => {
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -48,7 +48,7 @@ const SubjectSelector = ({ term, selectedSubjects, onSelect }) => {
                   key={subject.id}
                   type="button"
                   onClick={() => onSelect(subject.id, term)}
-                  className={`subject-button ${selectedSubjects.get(subject.id) === term ? 'selected' : ''}`}
+                  className={`subject-button ${selectedSubjects.has(`${cls}-${term}-${subject.id}`) ? 'selected' : ''}`}
               >
                 {subject.name}
               </button>

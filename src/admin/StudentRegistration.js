@@ -4,15 +4,14 @@ import SubjectSelector from './components/SubjectSelector';
 
 const StudentRegistration = ({ onBack }) => {
   const [selectedSubjects, setSelectedSubjects] = useState(new Map());
-  const [currentClass, setCurrentClass] = useState('');
-  const [classes, setClasses] = useState([]);
+  const [startClass, setStartClass] = useState(1); // Начален клас
+  const [classes, setClasses] = useState([1]);  // Започваме от клас 1
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     password: '',
     repeatedPassword: '',
-    myClas: '',
     group: '',
   });
 
@@ -24,35 +23,40 @@ const StudentRegistration = ({ onBack }) => {
     }));
   };
 
-  const handleSubjectToggle = (subjectId, term) => {
+  const handleSubjectToggle = (subjectId, term, cls) => {
     setSelectedSubjects(prevSelectedSubjects => {
       const updatedSubjects = new Map(prevSelectedSubjects);
-      if (updatedSubjects.has(subjectId)) {
-        updatedSubjects.delete(subjectId);
+      const key = `${cls}-${term}-${subjectId}`; // Уникален ключ за всеки предмет по клас и срок
+      if (updatedSubjects.has(key)) {
+        updatedSubjects.delete(key);
       } else {
-        updatedSubjects.set(subjectId, term);
+        updatedSubjects.set(key, { term, class: cls });
       }
       return updatedSubjects;
     });
   };
 
   const handleAddClass = () => {
-    if (currentClass) {
-      setClasses(prevClasses => {
-        const newClass = parseInt(prevClasses[prevClasses.length - 1]) + 1;
+    setClasses(prevClasses => {
+      const newClass = prevClasses[prevClasses.length - 1] + 1;
+      if (newClass <= 12) { // Ограничаваме максималния клас до 12
         return [...prevClasses, newClass];
-      });
-      setCurrentClass('');
-      setFormData(prevFormData => ({
-        ...prevFormData,
-        myClas: ''
-      }));
+      }
+      return prevClasses;
+    });
+  };
+
+  const handleStartClassChange = (value) => {
+    const newClass = startClass + value;
+    if (newClass >= 1 && newClass <= 12) {
+      setStartClass(newClass);
+      setClasses([newClass]); // Обновяваме класовете спрямо новия начален клас
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { firstName, lastName, email, password, repeatedPassword, myClas, group } = formData;
+    const { firstName, lastName, email, password, repeatedPassword, group } = formData;
 
     if (password !== repeatedPassword) {
       alert('Паролите не съвпадат');
@@ -60,19 +64,18 @@ const StudentRegistration = ({ onBack }) => {
     }
 
     try {
-      // Преобразуване на избраните предмети в необходимия формат
-      const subjects = [];
-      classes.forEach(cls => {
-        const term1Subjects = [...selectedSubjects.entries()].filter(([id, term]) => term === 1).map(([id]) => id);
-        const term2Subjects = [...selectedSubjects.entries()].filter(([id, term]) => term === 2).map(([id]) => id);
-        subjects.push({
-          classs: cls,
-          subjects: {
-            ...Object.fromEntries(term1Subjects.map(id => [id, 1])),
-            ...Object.fromEntries(term2Subjects.map(id => [id, 2]))
-          }
-        });
+      const subjectsByClass = new Map();
+
+      selectedSubjects.forEach((value, key) => {
+        const { class: cls, term } = value;
+        if (!subjectsByClass.has(cls)) {
+          subjectsByClass.set(cls, { classs: cls, subjects: {} });
+        }
+        const classEntry = subjectsByClass.get(cls);
+        classEntry.subjects[key.split('-')[2]] = term; // Извличаме предмета от ключа
       });
+
+      const subjects = Array.from(subjectsByClass.values());
 
       const response = await fetch('http://localhost:8080/api/be/e-journal/user/reg/student', {
         method: 'POST',
@@ -87,7 +90,7 @@ const StudentRegistration = ({ onBack }) => {
           password,
           repeatedPassword,
           role: 'STUDENT',
-          myClas,
+          myClas: classes.length,
           group,
           requestSubj: subjects,
         }),
@@ -163,14 +166,29 @@ const StudentRegistration = ({ onBack }) => {
             />
           </div>
           <div>
-            <label>Клас:</label>
+            <label>Група:</label>
             <input
                 type="text"
-                name="myClas"
-                value={currentClass}
-                onChange={(e) => setCurrentClass(e.target.value)}
-                required
+                name="group"
+                value={formData.group}
+                onChange={handleChange}
             />
+          </div>
+          <div>
+            <label>Начален клас:</label>
+            <div className="class-selector">
+              <button type="button" onClick={() => handleStartClassChange(-1)}>-</button>
+              <input
+                  type="number"
+                  value={startClass}
+                  min="1"
+                  max="12"
+                  readOnly
+              />
+              <button type="button" onClick={() => handleStartClassChange(1)}>+</button>
+            </div>
+          </div>
+          <div>
             <button type="button" className="btn-next-class" onClick={handleAddClass}>
               Следващ клас
             </button>
@@ -178,16 +196,18 @@ const StudentRegistration = ({ onBack }) => {
           <div className="subject-selector">
             {classes.map((cls, index) => (
                 <div key={index} className="class-section">
-                  {index === 0 ? null : <h3>Клас {cls}:</h3>}
+                  <h3>Клас {cls}:</h3>
                   <SubjectSelector
                       term={1}
+                      cls={cls}
                       selectedSubjects={selectedSubjects}
-                      onSelect={handleSubjectToggle}
+                      onSelect={(subjectId, term) => handleSubjectToggle(subjectId, term, cls)}
                   />
                   <SubjectSelector
                       term={2}
+                      cls={cls}
                       selectedSubjects={selectedSubjects}
-                      onSelect={handleSubjectToggle}
+                      onSelect={(subjectId, term) => handleSubjectToggle(subjectId, term, cls)}
                   />
                 </div>
             ))}
