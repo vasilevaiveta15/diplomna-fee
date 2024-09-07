@@ -1,0 +1,76 @@
+.students-container {
+  background-color: #e0f7fa;
+  padding: 20px;
+  text-align: center;
+}
+
+.student-details {
+  margin-bottom: 40px; /* Отстояние между учениците */
+}
+
+.student-info {
+  background-color: #f0f0f0;
+  padding: 10px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.year-table {
+  margin-bottom: 20px;
+}
+
+.grades-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.grades-table th,
+.grades-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.grades-table th {
+  background-color: #007bff;
+  color: white;
+}
+
+.back-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.edit-button {
+  background-color: #28a745; /* Зелен цвят за бутоните */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-left: 5px;
+  font-size: 0.9em;
+}
+
+.edit-button:hover {
+  background-color: #218838; /* Тъмен зелен при hover */
+}
+
+.grade-button {
+  background-color: #007bff; /* Син цвят на бутоните */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  margin: 2px;
+  font-size: 0.9em;
+}
+
+.grade-button:hover {
+  background-color: #0056b3; /* По-тъмен син при hover */
+}

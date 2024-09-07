@@ -1,0 +1,60 @@
+.form-wrapperrr {
+  background-color: #0056b3; /* Тъмно син фон за целия екран */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-containerrr {
+  background-color: #fff; /* Бял фон за контейнера */
+  padding: 20px; /* Повече вътрешно отстояние */
+  width: 100%;
+  max-width: 300px; /* Ширина на кутията */
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column; /* Подреждане на елементите вертикално */
+  gap: 10px; /* Отстояние между елементите */
+  max-height: 400px; /* Максимална височина на кутията */
+  overflow-y: auto; /* Скролбар при нужда */
+}
+
+.form-containerrr h2 {
+  color: #0056b3; /* Тъмно син цвят за заглавието */
+  margin: 0 0 10px 0; /* Отстояние само отдолу */
+}
+
+.form-containerrr label {
+  display: block;
+  color: #0056b3; /* Тъмно син цвят за текста на етикетите */
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.form-containerrr input {
+  width: calc(100% - 20px);
+  padding: 8px;
+  margin-bottom: 10px; /* Намалено отстояние от полето за оценка до бутоните */
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.form-containerrr button {
+  padding: 10px;
+  margin-top: 5px; /* Отстояние между бутоните */
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px; /* По-малък радиус на ъглите за бутоните */
+  cursor: pointer;
+}
+
+.form-containerrr button:hover {
+  background-color: #0056b3;
+}
+
+.back-button {
+  margin-bottom: 10px; /* Отстояние от бутона Назад до съдържанието */
+}

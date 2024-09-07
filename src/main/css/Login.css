@@ -1,0 +1,38 @@
+/* Използвайте flexbox за центриране на контейнера */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Височина на екрана */
+    background-color: #f0f0f0; /* Фонов цвят */
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    width: 300px; /* Ширина на формата */
+    padding: 20px;
+    background-color: #fff; /* Фонов цвят на формата */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Стил на полетата за вход и бутона */
+  .login-form input,
+  .login-form button {
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  .login-form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .login-form button:hover {
+    background-color: #0056b3;
+  }
+  
