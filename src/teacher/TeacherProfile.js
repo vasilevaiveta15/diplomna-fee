@@ -39,7 +39,7 @@ const TeacherProfile = ({ onBack }) => {
           <p>Фамилия: {profile.lastName}</p>
           <p>Роля: Учител</p>
           <p>Номер на предмет: {profile.subjectId}</p>
-          <p>Преподава по предмет: {profile.subjectName} - {profile.term} срок</p>
+          <p>Преподава по предмет: {profile.subjectName}</p>
         </div>
         <button onClick={onBack} className="back-button">Назад</button>
       </div>
