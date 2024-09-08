@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import './Student.css'; // Импортирайте CSS файла за стилизация
+import './Student.css'; // Импортиране на CSS файла за стилизация
 
 const Student = ({ onLogout }) => {
   const [groupedGrades, setGroupedGrades] = useState({});
+  const [myClass, setMyClass] = useState(null); // Променлива за текущия клас
 
   useEffect(() => {
     const fetchGrades = async () => {
@@ -14,36 +15,43 @@ const Student = ({ onLogout }) => {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
           },
         });
+
         if (!response.ok) {
           throw new Error('Failed to load grades');
         }
+
         const data = await response.json();
 
-        // Групиране на оценките по години, срокове и предмети
+        // Групиране на оценките по години (класове), срокове и предмети
         const grouped = data.reduce((acc, grade) => {
-          const { year, term, name, grade: gradeValue, finalGrade } = grade;
+          const { year, term, name, grade: gradeValue, finalGrade, classs } = grade;
 
-          if (!acc[year]) {
-            acc[year] = { term1: {}, term2: {} };
+          if (!acc[classs]) {
+            acc[classs] = { term1: {}, term2: {} };
           }
 
           const termKey = `term${term}`;
 
-          if (!acc[year][termKey][name]) {
-            acc[year][termKey][name] = {
+          if (!acc[classs][termKey][name]) {
+            acc[classs][termKey][name] = {
               name,
               grades: [],
               finalGrade: null,
             };
           }
 
-          acc[year][termKey][name].grades.push(gradeValue);
-          acc[year][termKey][name].finalGrade = finalGrade;
+          acc[classs][termKey][name].grades.push(gradeValue);
+          acc[classs][termKey][name].finalGrade = finalGrade;
 
           return acc;
         }, {});
 
         setGroupedGrades(grouped);
+
+        // Извличаме текущия клас от отговора на сървиса
+        const currentClass = data.length > 0 ? data[0].classs : null;
+        setMyClass(currentClass);
+
       } catch (error) {
         alert(error.message);
       }
@@ -52,9 +60,12 @@ const Student = ({ onLogout }) => {
     fetchGrades();
   }, []);
 
-  const calculateAverage = (grades) => {
-    const sum = grades.reduce((total, grade) => total + (grade.finalGrade || 0), 0);
-    return (sum / grades.length).toFixed(2);
+  // Изчисляване на среден успех за срок
+  const calculateAverage = (subjects) => {
+    const finalGrades = subjects.map(subject => subject.finalGrade).filter(grade => grade !== null);
+    if (finalGrades.length === 0) return null;
+    const sum = finalGrades.reduce((total, grade) => total + grade, 0);
+    return (sum / finalGrades.length).toFixed(2);
   };
 
   return (
@@ -62,21 +73,31 @@ const Student = ({ onLogout }) => {
         <h2>Добре дошъл, студент!</h2>
         <button onClick={onLogout} className="logout-button">Изход</button>
         <div className="grades-container">
-          {Object.keys(groupedGrades).sort((a, b) => a - b).map((year) => {
-            const { term1, term2 } = groupedGrades[year];
+          {Object.keys(groupedGrades).sort().map((classs) => {
+            const { term1, term2 } = groupedGrades[classs];
 
             const hasFirstTerm = Object.keys(term1).length > 0;
+            const hasSecondTerm = Object.keys(term2).length > 0;
 
-            if (!hasFirstTerm) return null; // Пропускаме годината, ако няма данни за 1ви срок
+            // Определяме дали текущият клас е този, в който се намираме
+            const isCurrentClass = myClass && parseInt(myClass) === parseInt(classs);
+
+            const term1Average = calculateAverage(Object.values(term1));
+            const term2Average = calculateAverage(Object.values(term2));
+            const yearlyAverage = (term1Average && term2Average)
+                ? ((parseFloat(term1Average) + parseFloat(term2Average)) / 2).toFixed(2)
+                : null;
 
             return (
-                <div key={year} className="year-container">
-                  <h3>{year}</h3>
+                <div key={classs} className={`year-container ${isCurrentClass ? 'highlight-current-class' : ''}`}>
+                  <h3>
+                    Клас: {classs}
+                  </h3>
 
                   {/* Първи срок */}
-                  {hasFirstTerm && (
+                  {hasFirstTerm ? (
                       <>
-                        <h4>Първи срок</h4>
+                        <h4>Срок 1</h4>
                         <table className="grades-table">
                           <thead>
                           <tr>
@@ -96,15 +117,19 @@ const Student = ({ onLogout }) => {
                           </tbody>
                         </table>
                         <div className="average-grade">
-                          Средна оценка: {calculateAverage(Object.values(term1))}
+                          Средна оценка за Срок 1: {term1Average || 'Все още няма въведена оценка'}
                         </div>
                       </>
+                  ) : (
+                      <div className="no-grade-message">
+                        Крайна срочна оценка за 1ви Срок: Няма срочна оценка
+                      </div>
                   )}
 
                   {/* Втори срок */}
-                  {Object.keys(term2).length > 0 && (
+                  {hasSecondTerm ? (
                       <>
-                        <h4>Втори срок</h4>
+                        <h4>Срок 2</h4>
                         <table className="grades-table">
                           <thead>
                           <tr>
@@ -124,10 +149,21 @@ const Student = ({ onLogout }) => {
                           </tbody>
                         </table>
                         <div className="average-grade">
-                          Средна оценка: {calculateAverage(Object.values(term2))}
+                          Средна оценка за Срок 2: {term2Average || 'Все още няма въведена оценка'}
                         </div>
                       </>
+                  ) : (
+                      <div className="no-grade-message">
+                        Крайна срочна оценка за 2ри Срок: Няма срочна оценка
+                      </div>
                   )}
+
+                  {/* Годишен успех */}
+                  <div className="yearly-grade">
+                    <p>
+                      Годишна Оценка: {yearlyAverage || 'Все още няма годишна оценка'}
+                    </p>
+                  </div>
                 </div>
             );
           })}

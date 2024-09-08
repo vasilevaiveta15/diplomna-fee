@@ -56,3 +56,9 @@
     font-weight: bold;
     margin-top: 10px;
 }
+.highlight-current-class {
+    color: green;
+    font-weight: bold;
+}
+
+
