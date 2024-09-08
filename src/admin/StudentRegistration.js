@@ -90,7 +90,7 @@ const StudentRegistration = ({ onBack }) => {
           password,
           repeatedPassword,
           role: 'STUDENT',
-          myClas: classes.length,
+          myClas: startClass,  // Use startClass for myClas field
           group,
           requestSubj: subjects,
         }),
