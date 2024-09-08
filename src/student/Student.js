@@ -22,9 +22,13 @@ const Student = ({ onLogout }) => {
 
         const data = await response.json();
 
+        // Извличане на текущия клас от отговора на сървиса
+        const currentClass = data.length > 0 ? data[0].myClass : null;
+        setMyClass(currentClass);
+
         // Групиране на оценките по години (класове), срокове и предмети
         const grouped = data.reduce((acc, grade) => {
-          const { year, term, name, grade: gradeValue, finalGrade, classs } = grade;
+          const { term, name, grade: gradeValue, finalGrade, classs } = grade;
 
           if (!acc[classs]) {
             acc[classs] = { term1: {}, term2: {} };
@@ -47,10 +51,6 @@ const Student = ({ onLogout }) => {
         }, {});
 
         setGroupedGrades(grouped);
-
-        // Извличаме текущия клас от отговора на сървиса
-        const currentClass = data.length > 0 ? data[0].classs : null;
-        setMyClass(currentClass);
 
       } catch (error) {
         alert(error.message);
