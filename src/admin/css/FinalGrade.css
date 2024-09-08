@@ -1,0 +1,63 @@
+.final-grade-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #003366; /* Син фон */
+    color: white; /* Бел цвят на текста */
+    padding: 20px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 200px;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+}
+
+.submit-button {
+    background-color: #0056b3; /* Тъмен син за бутона */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.submit-button:hover {
+    background-color: #004494; /* По-тъмен син при hover */
+}
+
+.back-button {
+    background-color: #777; /* Сив цвят за бутона "Назад" */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.back-button:hover {
+    background-color: #555; /* По-тъмен сив при hover */
+}
+
+.error-message {
+    color: #ff0000; /* Червен цвят за съобщения за грешки */
+}
