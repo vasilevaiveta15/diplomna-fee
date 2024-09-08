@@ -29,23 +29,15 @@ const Registration = ({ onBackToLogin }) => {
 
   useEffect(() => {
     const fetchSubjects = async () => {
-      const token = localStorage.getItem('authToken');
       try {
-        const response = await fetch('http://localhost:8080/api/be/e-journal/all-subjects', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
+        const response = await fetch('http://localhost:8080/api/be/e-journal/all-subjects');
         if (response.ok) {
           const data = await response.json();
 
-          // Сортиране по срок - първо 1ви, после 2ри
-          const sortedSubjects = data.sort((a, b) => a.term - b.term);
-
-          // Актуализиране на името на предметите с добавка на срока
-          const updatedSubjects = sortedSubjects.map(subject => ({
+          // Премахваме срока от показваните имена на предметите
+          const updatedSubjects = data.map(subject => ({
             ...subject,
-            displayName: `${subject.name} - ${subject.term} семестър`,
+            displayName: subject.name, // Показва се само името на предмета
           }));
 
           setSubjects(updatedSubjects);
@@ -71,7 +63,6 @@ const Registration = ({ onBackToLogin }) => {
     registrationData.role = roleMapping[formValues.role] || null;
 
     try {
-      const token = localStorage.getItem('authToken');
       const response = await fetch('http://localhost:8080/api/be/e-journal/user/reg', {
         method: 'POST',
         headers: {
@@ -219,7 +210,7 @@ const Registration = ({ onBackToLogin }) => {
                   >
                     {subjects.map((subject) => (
                         <MenuItem key={subject.id} value={subject.id}>
-                          {subject.displayName}
+                          {subject.displayName} {/* Показваме само името на предмета */}
                         </MenuItem>
                     ))}
                   </TextField>
