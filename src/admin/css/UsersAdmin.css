@@ -1,0 +1,106 @@
+/* Цялостен фон на страницата в тъмно синьо */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #003366; /* Тъмно син фон за цялата страница */
+}
+
+/* Основен контейнер за съдържанието на страницата */
+.users-container {
+    padding: 20px;
+    margin-top: 1500px; /* Увеличаваме отстъпа от горната част на страницата */
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: space-between; /* Разпределяме секциите по краищата */
+}
+
+/* Секцията "Учители" */
+.teachers-section {
+    flex: 1; /* Секциите заемат равно пространство */
+    text-align: left; /* Текста на секцията "Учители" вляво */
+    color: #ffffff; /* Бял текст */
+}
+
+/* Секцията "Ученици" */
+.students-section {
+    flex: 1; /* Секциите заемат равно пространство */
+    text-align: right; /* Текста на секцията "Ученици" вдясно */
+    color: #ffffff; /* Бял текст */
+}
+
+/* Остатък от CSS правилата */
+.user-details {
+    background-color: transparent; /* Премахваме бялото от фон */
+    border: none; /* Премахваме границата */
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    color: #ffffff; /* Текстът в бялото за контраст на тъмно син фон */
+}
+
+.user-details p {
+    margin: 5px 0;
+}
+
+h2 {
+    color: #ffffff; /* Сменяме цвета на заглавията, за да е контрастно на тъмно синия фон */
+}
+
+.class-table {
+    background-color: transparent; /* Премахваме бялото от фон */
+    color: #ffffff; /* Цвета на текста на таблиците */
+    margin-bottom: 30px;
+}
+
+.term-table {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Позиционираме таблиците в дясно */
+}
+
+.grades-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.grades-table th, .grades-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: right; /* Подреждаме текста вдясно */
+}
+
+.grades-table th {
+    background-color: #004080; /* Заглавията на таблиците в тъмен син цвят */
+    color: #ffffff; /* Бял текст */
+}
+
+.final-grade, .yearly-grade {
+    margin-top: 10px;
+}
+
+.back-button {
+    background-color: #ffffff; /* Правим бутона по-ясен на тъмно синия фон */
+    color: #003366; /* Цветът на текста на бутона е в същия тъмно син тон */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    align-self: flex-end; /* Позиционираме бутона в дясната част */
+}
+
+/* Сменяме фона на footer, ако има такъв */
+footer {
+    background-color: #003366; /* Същият тъмно син фон за footer */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}

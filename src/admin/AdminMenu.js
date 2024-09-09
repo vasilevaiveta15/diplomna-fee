@@ -1,41 +1,50 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, Snackbar } from '@mui/material';
-import StudentRegistration from './StudentRegistration'; // Импортирайте компонента за регистрация на ученик
-import Term from './Term'; // Импортирайте компонента Term
-import FinalGrade from './FinalGrade'; // Импортирайте новия компонент FinalGrade
+import StudentRegistration from './StudentRegistration';
+import Term from './Term';
+import FinalGrade from './FinalGrade';
+import UsersAdmin from './UsersAdmin'; // Импортираме новия компонент UsersAdmin
 
 const AdminMenu = () => {
   const [showStudentRegistration, setShowStudentRegistration] = useState(false);
   const [showTerm, setShowTerm] = useState(false);
-  const [showFinalGrade, setShowFinalGrade] = useState(false); // Добавяме състояние за FinalGrade
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // Състояние за Snackbar
+  const [showFinalGrade, setShowFinalGrade] = useState(false);
+  const [showUsersAdmin, setShowUsersAdmin] = useState(false); // Добавяме състояние за UsersAdmin
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const handleShowStudentRegistration = () => {
     setShowStudentRegistration(true);
     setShowTerm(false);
     setShowFinalGrade(false);
+    setShowUsersAdmin(false); // Скриваме останалите компоненти
   };
 
   const handleShowTerm = () => {
     setShowStudentRegistration(false);
     setShowTerm(true);
     setShowFinalGrade(false);
+    setShowUsersAdmin(false);
   };
 
   const handleShowFinalGrade = () => {
     setShowStudentRegistration(false);
     setShowTerm(false);
     setShowFinalGrade(true);
+    setShowUsersAdmin(false);
+  };
+
+  const handleShowUsersAdmin = () => {
+    setShowStudentRegistration(false);
+    setShowTerm(false);
+    setShowFinalGrade(false);
+    setShowUsersAdmin(true); // Показваме компонента UsersAdmin
   };
 
   const handleBack = () => {
     setShowStudentRegistration(false);
     setShowTerm(false);
     setShowFinalGrade(false);
-  };
-
-  const handleTermSuccess = () => {
-    setShowTerm(false);
+    setShowUsersAdmin(false);
   };
 
   const handleAddNextYear = async () => {
@@ -52,9 +61,7 @@ const AdminMenu = () => {
         throw new Error('Неуспешно добавяне на нова година');
       }
 
-      setSnackbarOpen(true); // Отваря Snackbar при успешен отговор
-
-      // Скрие съобщението след 4 секунди
+      setSnackbarOpen(true);
       setTimeout(() => setSnackbarOpen(false), 4000);
     } catch (error) {
       alert(error.message);
@@ -73,9 +80,11 @@ const AdminMenu = () => {
         {showStudentRegistration ? (
             <StudentRegistration onBack={handleBack} />
         ) : showTerm ? (
-            <Term onBack={handleBack} onSuccess={handleTermSuccess} />
+            <Term onBack={handleBack} onSuccess={() => setShowTerm(false)} />
         ) : showFinalGrade ? (
             <FinalGrade onBack={handleBack} />
+        ) : showUsersAdmin ? (
+            <UsersAdmin onBack={handleBack} /> // Добавяме новия компонент UsersAdmin
         ) : (
             <Box
                 sx={{
@@ -101,6 +110,9 @@ const AdminMenu = () => {
               </Button>
               <Button variant="contained" color="primary" sx={{ marginTop: 2 }} onClick={handleShowFinalGrade}>
                 Добавяне на срочна оценка
+              </Button>
+              <Button variant="contained" color="primary" sx={{ marginTop: 2 }} onClick={handleShowUsersAdmin}>
+                Потребители {/* Нов бутон за Потребители */}
               </Button>
               <Button variant="contained" color="secondary" sx={{ marginTop: 2 }} onClick={handleAddNextYear}>
                 Добавяне на нова година
