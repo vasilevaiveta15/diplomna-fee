@@ -1,76 +1,41 @@
-.students-container {
-  background-color: #e0f7fa;
-  padding: 20px;
-  text-align: center;
-}
-
-.student-details {
-  margin-bottom: 40px; /* Отстояние между учениците */
-}
-
-.student-info {
-  background-color: #f0f0f0;
-  padding: 10px;
-  margin-bottom: 20px;
-  text-align: left;
-}
-
-.year-table {
-  margin-bottom: 20px;
-}
-
-.grades-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-
+/* Променяме цвета на всички текстове на бял */
+.students-container,
+.student-info p,
 .grades-table th,
-.grades-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
+.grades-table td,
+.final-grade p,
+.yearly-grade p {
+  color: white; /* Бял цвят за текста */
 }
 
+/* Стилове за таблицата с оценки */
 .grades-table th {
-  background-color: #007bff;
-  color: white;
+  background-color: #003366; /* Тъмносин фон за заглавията на таблицата */
+  color: white; /* Бял текст в заглавията */
 }
 
 .back-button {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-.edit-button {
-  background-color: #28a745; /* Зелен цвят за бутоните */
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 3px;
-  cursor: pointer;
-  margin-left: 5px;
-  font-size: 0.9em;
+  background-color: #003366; /* Тъмносин бутон */
+  color: white; /* Бял текст */
 }
 
-.edit-button:hover {
-  background-color: #218838; /* Тъмен зелен при hover */
+.edit-button {
+  background-color: #28a745;
+  color: white;
 }
 
 .grade-button {
-  background-color: #007bff; /* Син цвят на бутоните */
+  background-color: #003366; /* Тъмносин бутон за оценките */
   color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 3px;
-  cursor: pointer;
-  margin: 2px;
-  font-size: 0.9em;
 }
 
 .grade-button:hover {
-  background-color: #0056b3; /* По-тъмен син при hover */
+  background-color: #003366; /* По-тъмен тъмносин при hover */
+}
+
+/* Променяме фона на контейнера на светлосин */
+.students-container {
+  background-color: #0F52BA; /* Светлосин фон */
+  padding: 20px;
+  text-align: center;
 }
