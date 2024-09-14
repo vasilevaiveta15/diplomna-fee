@@ -5,6 +5,7 @@ const UsersAdmin = ({ onBack }) => {
     const [teachers, setTeachers] = useState([]);
     const [students, setStudents] = useState([]);
 
+    // Фетч заявка за учители
     useEffect(() => {
         const fetchTeachers = async () => {
             try {
@@ -27,6 +28,7 @@ const UsersAdmin = ({ onBack }) => {
         fetchTeachers();
     }, []);
 
+    // Фетч заявка за ученици
     useEffect(() => {
         const fetchStudents = async () => {
             try {
@@ -49,12 +51,12 @@ const UsersAdmin = ({ onBack }) => {
         fetchStudents();
     }, []);
 
-    // Функция за групиране на предмети по клас и срок
+    // Групиране на предмети по клас и срок
     const groupSubjectsByClassAndTerm = (subjects) => {
         const grouped = {};
 
         subjects.forEach(subject => {
-            const classs = subject.classs;
+            const classs = subject.classs; // Използваме classs за класа
             const term = subject.term;
 
             if (!grouped[classs]) {
@@ -69,28 +71,32 @@ const UsersAdmin = ({ onBack }) => {
                 grade: subject.grade,
                 finalGrade: subject.finalGrade,
                 gradeId: subject.gradeId,
-                subjectId: subject.subjectId, // Добавяме subjectId за използване
+                subjectId: subject.subjectId,
             });
         });
 
         return grouped;
     };
 
+    // Изчисляване на крайна оценка за срок
     const calculateOverallTermGrade = (subjects) => {
-        const finalGrades = [];
+        const allGrades = [];
+
         Object.values(subjects).forEach(subjectArr => {
             subjectArr.forEach(subject => {
-                if (subject.finalGrade !== null) {
-                    finalGrades.push(subject.finalGrade);
+                // Взимаме редовните оценки, ако ги има, иначе използваме финалната
+                if (subject.grade !== null) {
+                    allGrades.push(subject.grade);
+                } else if (subject.finalGrade !== null) {
+                    allGrades.push(subject.finalGrade);
                 }
             });
         });
 
-        if (finalGrades.length === 0) return null;
-        const sum = finalGrades.reduce((acc, grade) => acc + grade, 0);
-        return (sum / finalGrades.length).toFixed(2);
+        if (allGrades.length === 0) return null; // Ако няма оценки, връщаме null
+        const sum = allGrades.reduce((acc, grade) => acc + grade, 0);
+        return (sum / allGrades.length).toFixed(2); // Средна стойност на оценките
     };
-
     return (
         <div className="users-container">
             <div className="teachers-section">
@@ -114,7 +120,11 @@ const UsersAdmin = ({ onBack }) => {
                             <p><strong>Номер на ученик:</strong> {student.id}</p>
                             <p><strong>Име:</strong> {student.name}</p>
                             <p><strong>Фамилия:</strong> {student.lastName}</p>
-                            <p><strong>Клас:</strong> {student.classs}</p>
+
+                            {/* Показване на текущия клас */}
+                            <p><strong>Текущ Клас:</strong> {student.clas}</p>
+
+                            {/* Показване на групата */}
                             <p><strong>Група:</strong> {student.group}</p>
 
                             {Object.keys(groupedSubjects).map(classs => {
@@ -127,7 +137,7 @@ const UsersAdmin = ({ onBack }) => {
 
                                 return (
                                     <div key={classs} className="class-table">
-                                        <h3>Клас: {classs}</h3>
+                                        <h3>Клас: {classs}</h3> {/* Извеждаме classs за всеки клас */}
 
                                         {/* Таблица за 1ви срок */}
                                         <div className="term-table">
@@ -135,7 +145,7 @@ const UsersAdmin = ({ onBack }) => {
                                             <table className="grades-table">
                                                 <thead>
                                                 <tr>
-                                                    <th>Номер на предмет</th> {/* Нова колона за subjectId */}
+                                                    <th>Номер на предмет</th> {/* Колона за subjectId */}
                                                     <th>Предмет</th>
                                                     <th>Оценки</th>
                                                     <th>Срочна оценка</th>
@@ -186,7 +196,7 @@ const UsersAdmin = ({ onBack }) => {
                                             <table className="grades-table">
                                                 <thead>
                                                 <tr>
-                                                    <th>Номер на предмет</th> {/* Нова колона за subjectId */}
+                                                    <th>Номер на предмет</th> {/* Колона за subjectId */}
                                                     <th>Предмет</th>
                                                     <th>Оценки</th>
                                                     <th>Срочна оценка</th>
